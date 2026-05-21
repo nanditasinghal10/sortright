@@ -103,7 +103,42 @@ export const ITEMS: WasteItem[] = [
   { id: "cigarette-butt", name: "Cigarette butt", emoji: "🚬", bin: "trash", category: "outdoors", why: "Filters are plastic. Never ground-litter them; they leach toxins into water.", difficulty: 2 },
   { id: "chewing-gum", name: "Chewing gum", emoji: "🍬", bin: "trash", category: "kitchen", why: "Most gum bases are synthetic plastic. Wrap in paper before binning.", difficulty: 3 },
   { id: "ceramic-mug", name: "Broken ceramic mug", emoji: "🏺", bin: "trash", category: "kitchen", why: "Fired ceramic isn't recyclable with glass. Wrap shards before tossing.", difficulty: 3 },
-  { id: "diaper-used", name: "Used diaper", emoji: "🚼", bin: "trash", category: "bath", why: "Mixed plastic, gel, and biological waste. Trash only, despite the name 'biodegradable'.", alternatives: "Cloth diapers cut landfill weight dramatically.", difficulty: 2 }
+  { id: "diaper-used", name: "Used diaper", emoji: "🚼", bin: "trash", category: "bath", why: "Mixed plastic, gel, and biological waste. Trash only, despite the name 'biodegradable'.", alternatives: "Cloth diapers cut landfill weight dramatically.", difficulty: 2 },
+
+  // ESOTERIC / TRICKY
+  { id: "face-mask-disposable", name: "Disposable face mask", emoji: "😷", bin: "trash", category: "bath", why: "Layered nonwoven plus elastic + metal nose strip. Always trash.", alternatives: "Reusable cloth masks once airborne risk is low.", difficulty: 2 },
+  { id: "vhs-tape", name: "VHS tape", emoji: "📼", bin: "hazardous", category: "tech", why: "Magnetic tape coated in metal oxide. Specialty e-waste recyclers handle them.", difficulty: 3 },
+  { id: "floppy-disk", name: "Floppy disk", emoji: "💾", bin: "hazardous", category: "tech", why: "Magnetic media inside a plastic shell. E-waste, not curbside.", difficulty: 3 },
+  { id: "old-laptop", name: "Old laptop", emoji: "💻", bin: "hazardous", category: "tech", why: "Lithium battery + heavy metals. Manufacturer takeback or municipal e-waste only.", difficulty: 1, co2Saved: 12 },
+  { id: "keyboard-old", name: "Old keyboard", emoji: "⌨️", bin: "hazardous", category: "tech", why: "Mostly plastic but has a circuit board. E-waste drop-off.", difficulty: 2 },
+  { id: "computer-mouse", name: "Old computer mouse", emoji: "🖱️", bin: "hazardous", category: "tech", why: "Tiny circuit board + battery on wireless ones. E-waste.", difficulty: 2 },
+  { id: "old-camera", name: "Old digital camera", emoji: "📷", bin: "hazardous", category: "tech", why: "Battery + electronics. E-waste, never trash.", difficulty: 2 },
+  { id: "christmas-tree-real", name: "Real Christmas tree", emoji: "🎄", bin: "compost", category: "yard", why: "Most cities run free curbside pickup in January and chip them into mulch.", difficulty: 1, co2Saved: 4 },
+  { id: "stuffed-animal", name: "Old stuffed animal", emoji: "🧸", bin: "hazardous", category: "textile", why: "Donate if clean. Otherwise textile drop-offs accept them for recycling.", difficulty: 2 },
+  { id: "picture-frame", name: "Broken picture frame", emoji: "🖼️", bin: "trash", category: "office", why: "Mixed wood, glass, and metal — typically too small to disassemble curbside.", difficulty: 3 },
+  { id: "wood-pencil", name: "Wood pencil stub", emoji: "✏️", bin: "trash", category: "office", why: "Graphite + ferrule + eraser. Too small + mixed for paper recycling.", difficulty: 2 },
+  { id: "lipstick-tube", name: "Lipstick tube", emoji: "💄", bin: "trash", category: "bath", why: "Mixed plastic + magnet + residue. Some brands run mail-back beauty programs.", difficulty: 3 },
+  { id: "umbrella-broken", name: "Broken umbrella", emoji: "☂️", bin: "trash", category: "outdoors", why: "Mixed metal ribs, plastic handle, and fabric. Bulk waste in most cities.", difficulty: 3 },
+  { id: "eyeglasses-old", name: "Old eyeglasses", emoji: "👓", bin: "hazardous", category: "tech", why: "Donate at LensCrafters, Lions Club, or many optometrists. Never landfill.", difficulty: 2 },
+  { id: "backpack-worn", name: "Worn-out backpack", emoji: "🎒", bin: "hazardous", category: "textile", why: "Textile drop-offs accept even torn backpacks for shredding.", difficulty: 2 },
+  { id: "tennis-ball", name: "Used tennis ball", emoji: "🎾", bin: "trash", category: "outdoors", why: "Pressurized rubber + felt. Some shelters love them as dog toys; otherwise trash.", difficulty: 3 },
+  { id: "yoga-mat", name: "Old yoga mat", emoji: "🧘", bin: "hazardous", category: "textile", why: "PVC and TPE mats are not curbside-recyclable. Lululemon and others run takeback.", difficulty: 3 },
+  { id: "chopsticks-disposable", name: "Disposable chopsticks", emoji: "🥢", bin: "compost", category: "kitchen", why: "Untreated bamboo composts well. Lacquered ones go in trash.", difficulty: 2 },
+  { id: "cooking-oil", name: "Used cooking oil", emoji: "🍳", bin: "hazardous", category: "kitchen", why: "Never pour down the drain. Many cities collect it as HHW or for biodiesel.", difficulty: 3 },
+  { id: "k-cup", name: "K-cup coffee pod", emoji: "🟫", bin: "trash", category: "kitchen", why: "Mixed foil, plastic, and grounds. Peel apart only if your brand is curbside-friendly.", alternatives: "Refillable steel pods or a French press.", difficulty: 3 },
+  { id: "wine-cork-natural", name: "Natural wine cork", emoji: "🍷", bin: "compost", category: "kitchen", why: "Real cork composts. Synthetic 'corks' (plastic) go in trash.", difficulty: 3 },
+  { id: "twist-tie", name: "Bread twist tie", emoji: "➰", bin: "trash", category: "kitchen", why: "Wire-and-paper combo too small to sort. Save them and reuse.", difficulty: 2 },
+  { id: "glow-stick", name: "Used glow stick", emoji: "✨", bin: "hazardous", category: "tech", why: "Glass ampoule + chemical mix. HHW only.", difficulty: 3 },
+  { id: "smoke-alarm-battery", name: "9V battery", emoji: "⚡", bin: "hazardous", category: "tech", why: "Tape the terminals before drop-off — 9V batteries can short and start fires.", difficulty: 2 },
+  { id: "bicycle-tube", name: "Bicycle inner tube", emoji: "🚲", bin: "hazardous", category: "outdoors", why: "Many bike shops run rubber takeback programs. Don't trash.", difficulty: 3 },
+  { id: "garden-hose", name: "Old garden hose", emoji: "🐍", bin: "trash", category: "yard", why: "Tangles recycling machinery the same as plastic bags. Cut, bag, and bin.", difficulty: 3 },
+  { id: "broken-mirror", name: "Broken mirror", emoji: "🪞", bin: "hazardous", category: "tech", why: "Silvered glass isn't bottle-glass and shards are dangerous. HHW or wrap heavily for trash.", difficulty: 3 },
+  { id: "fire-extinguisher", name: "Old fire extinguisher", emoji: "🧯", bin: "hazardous", category: "tech", why: "Pressurized vessel + chemicals. Fire stations and HHW take them.", difficulty: 3 },
+  { id: "hair-clippings", name: "Hair clippings", emoji: "💇", bin: "compost", category: "bath", why: "Pure keratin composts slowly but does break down. Mix with browns.", difficulty: 3 },
+  { id: "pencil-shavings", name: "Pencil shavings", emoji: "🪶", bin: "compost", category: "office", why: "Wood + graphite. Compost in moderation — graphite is inert.", difficulty: 3 },
+  { id: "candle-stub", name: "Candle stub", emoji: "🕯️", bin: "trash", category: "kitchen", why: "Paraffin wax doesn't compost or recycle. Beeswax stubs can be re-melted.", difficulty: 3 },
+  { id: "playing-cards", name: "Old playing cards", emoji: "🎴", bin: "recycle", category: "office", why: "Most decks are paperboard with a thin plastic coating; recycle with mixed paper.", difficulty: 2 },
+  { id: "matchbook", name: "Used matchbook", emoji: "🔥", bin: "trash", category: "office", why: "Sulfur tips + paper. Make sure they're fully cool before binning.", difficulty: 2 }
 ];
 
 export function getItem(id: string) {
