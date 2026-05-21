@@ -23,9 +23,9 @@ export function SiteHeader() {
   const pathname = usePathname();
   const hydrated = useHydrated();
   const totalScore = useSortStore((s) => s.totalScore);
-  const currentStreak = useSortStore((s) => s.currentStreak);
+  const highestStreak = useSortStore((s) => s.highestStreak);
   const score = hydrated ? totalScore : 0;
-  const streak = hydrated ? currentStreak : 0;
+  const streak = hydrated ? highestStreak : 0;
   return (
     <header className="z-20 sticky top-0 backdrop-blur-md bg-cream/70 border-b border-sage-200/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center gap-6">
@@ -73,7 +73,7 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-2">
           <Link
             href="/impact"
-            aria-label={`Your impact: ${score} points, ${streak} day streak`}
+            aria-label={`Your impact: ${score} points, best streak ${streak}`}
             className="hidden sm:inline-flex items-center gap-2 rounded-full border border-sage-300/70 bg-sage-50/80 hover:bg-sage-100/80 px-3 h-10 text-sm transition"
           >
             <span className="inline-flex items-center gap-1 text-sage-800">
@@ -85,7 +85,7 @@ export function SiteHeader() {
             <span className="inline-flex items-center gap-1 text-sage-800">
               <Flame className={cn("h-3.5 w-3.5", streak > 0 ? "text-clay-500" : "text-ink-muted")} />
               <span className="font-medium tabular-nums">{streak}</span>
-              <span className="text-ink-muted text-xs">{streak === 1 ? "day" : "days"}</span>
+              <span className="text-ink-muted text-xs">best</span>
             </span>
           </Link>
           <Link

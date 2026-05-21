@@ -168,7 +168,7 @@ export default function SortGamePage() {
       setBestStreakInRound(newBest);
 
       if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
-      feedbackTimer.current = setTimeout(() => setFeedback(null), 1800);
+      feedbackTimer.current = setTimeout(() => setFeedback(null), 5000);
 
       if (idx + 1 >= ROUND_SIZE) {
         finishRound(newCorrect, newBest);
