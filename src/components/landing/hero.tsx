@@ -144,7 +144,6 @@ export function Hero() {
         >
           <motion.div variants={fadeUp} custom={0}>
             <span className="inline-flex items-center gap-2 rounded-full border border-sage-300/70 bg-sage-100/70 px-4 py-1.5 text-xs font-medium text-sage-800">
-              <span className="h-1.5 w-1.5 rounded-full bg-sage-600" />
               A friendlier way to sort the planet
             </span>
           </motion.div>

@@ -54,7 +54,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "relative px-3 py-2 text-sm rounded-full transition-colors",
+                  "relative px-3 py-2 text-sm rounded-full whitespace-nowrap transition-colors",
                   active ? "text-sage-900" : "text-ink-soft hover:text-ink"
                 )}
               >
@@ -90,7 +90,7 @@ export function SiteHeader() {
           </Link>
           <Link
             href="/sort"
-            className="inline-flex items-center gap-2 rounded-full bg-sage-700 hover:bg-sage-800 text-cream px-4 h-10 text-sm font-medium shadow-leaf transition"
+            className="inline-flex items-center gap-2 rounded-full bg-sage-700 hover:bg-sage-800 text-cream px-4 h-10 text-sm font-medium whitespace-nowrap shadow-leaf transition"
           >
             Start sorting
           </Link>
