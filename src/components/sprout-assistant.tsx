@@ -186,10 +186,18 @@ export function SproutAssistant() {
         aria-label={open ? "Close Sprout assistant" : "Chat with Sprout"}
         onClick={handleButtonClick}
         className="fixed bottom-5 right-5 z-50 grid place-items-center h-14 w-14 rounded-full bg-sage-700 text-cream shadow-leaf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
-        initial={{ scale: 0, rotate: -20 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 220, damping: 18 }}
-        whileHover={{ scale: 1.06 }}
+        initial={{ scale: 0 }}
+        animate={
+          prefersReducedMotion || open
+            ? { scale: 1 }
+            : { scale: [1, 1.08, 1] }
+        }
+        transition={
+          prefersReducedMotion || open
+            ? { type: "spring", stiffness: 220, damping: 18 }
+            : { duration: 3.2, repeat: Infinity, ease: "easeInOut" }
+        }
+        whileHover={{ scale: 1.12 }}
         whileTap={{ scale: 0.94 }}
       >
         <span className="relative grid place-items-center h-7 w-7">
@@ -209,18 +217,6 @@ export function SproutAssistant() {
           >
             <SproutLeafIcon className="h-7 w-7" />
           </motion.span>
-          <motion.span
-            aria-hidden="true"
-            className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-clay-400 border border-cream"
-            animate={
-              prefersReducedMotion || open ? { opacity: open ? 0 : 1, scale: 1 } : { opacity: 1, scale: [1, 1.3, 1] }
-            }
-            transition={
-              prefersReducedMotion || open
-                ? { duration: 0.18 }
-                : { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
-            }
-          />
         </span>
       </motion.button>
 
