@@ -4,6 +4,8 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SproutAssistant } from "@/components/sprout-assistant";
+import { OnboardingTour } from "@/components/onboarding-tour";
+import { Analytics } from "@vercel/analytics/next";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -45,7 +47,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main className="flex-1 z-10">{children}</main>
         <SiteFooter />
+        <OnboardingTour />
         <SproutAssistant />
+        <Analytics />
       </body>
     </html>
   );

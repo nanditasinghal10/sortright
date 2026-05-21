@@ -11,6 +11,7 @@ import { Sparkline } from "@/components/impact/sparkline";
 import { BadgeGrid } from "@/components/impact/badge-grid";
 import { ActivityList } from "@/components/impact/activity-list";
 import { CompareStrip } from "@/components/impact/compare-strip";
+import { ShareCardButton } from "@/components/impact/share-card-button";
 import { formatNumber } from "@/lib/utils";
 
 function AnimatedNumber({
@@ -92,6 +93,16 @@ export default function ImpactPage() {
           <AnimatedNumber value={landfillKg} decimals={2} className="font-medium text-clay-700" />
           {" "}kg out of landfill. Small sorts, real numbers.
         </p>
+        {hydrated ? (
+          <div className="mt-6">
+            <ShareCardButton
+              co2Kg={totals.co2Kg}
+              items={totals.items}
+              streak={state.currentStreak}
+              diverted={totals.diverted}
+            />
+          </div>
+        ) : null}
       </FadeUp>
 
       <section aria-label="Quick stats" className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-3">

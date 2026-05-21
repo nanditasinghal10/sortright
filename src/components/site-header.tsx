@@ -10,6 +10,7 @@ import { useHydrated } from "@/lib/api";
 
 const NAV = [
   { href: "/sort", label: "Sort game" },
+  { href: "/identify", label: "Snap and sort" },
   { href: "/learn", label: "Learn" },
   { href: "/quiz", label: "Quiz" },
   { href: "/locate", label: "Find drop-off" },

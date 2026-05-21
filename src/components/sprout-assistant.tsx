@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
+import { motion, AnimatePresence, useAnimationControls, useReducedMotion } from "framer-motion";
 import { Send, X, Sparkles, Volume2, VolumeX } from "lucide-react";
 
 interface ChatMessage {
@@ -28,17 +28,22 @@ function uid(): string {
   return Math.random().toString(36).slice(2, 10);
 }
 
+const SPROUT_SEEN_KEY = "sortright:sproutSeen:v1";
+
 export function SproutAssistant() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([GREETING]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [hintDismissed, setHintDismissed] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const buttonControls = useAnimationControls();
   const interactedRef = useRef(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   function playReplySound() {
     if (muted || typeof window === "undefined") return;
@@ -105,6 +110,13 @@ export function SproutAssistant() {
       }
     })();
 
+    // Honor reduced-motion preference: skip the idle-wiggle scheduling entirely.
+    if (prefersReducedMotion) {
+      return () => {
+        cancelled = true;
+      };
+    }
+
     const wiggle = async () => {
       if (cancelled) return;
       try {
@@ -133,7 +145,7 @@ export function SproutAssistant() {
       cancelled = true;
       if (timeout) clearTimeout(timeout);
     };
-  }, [open, buttonControls]);
+  }, [open, buttonControls, prefersReducedMotion]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -147,6 +159,52 @@ export function SproutAssistant() {
       return () => clearTimeout(t);
     }
   }, [open]);
+
+  // First-visit hint: show a small bubble pointing at Sprout after ~3s.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (open || hintDismissed) return;
+    let seen: string | null = null;
+    try {
+      seen = window.localStorage.getItem(SPROUT_SEEN_KEY);
+    } catch {
+      // localStorage unavailable; treat as unseen
+    }
+    if (seen === "1") return;
+    const t = setTimeout(() => {
+      setShowHint(true);
+    }, 3000);
+    return () => clearTimeout(t);
+  }, [open, hintDismissed]);
+
+  // Auto-hide the hint after 12 seconds.
+  useEffect(() => {
+    if (!showHint) return;
+    const t = setTimeout(() => {
+      dismissHint();
+    }, 12000);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showHint]);
+
+  function dismissHint() {
+    setShowHint(false);
+    setHintDismissed(true);
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem(SPROUT_SEEN_KEY, "1");
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  function handleButtonClick() {
+    setOpen((o) => !o);
+    if (showHint || !hintDismissed) {
+      dismissHint();
+    }
+  }
 
   async function send(text: string) {
     const trimmed = text.trim();
@@ -195,43 +253,90 @@ export function SproutAssistant() {
       <motion.button
         type="button"
         aria-label={open ? "Close Sprout assistant" : "Chat with Sprout"}
-        onClick={() => setOpen((o) => !o)}
+        onClick={handleButtonClick}
         className="fixed bottom-5 right-5 z-50 grid place-items-center h-14 w-14 rounded-full bg-sage-700 text-cream shadow-leaf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
         initial={{ scale: 0, rotate: -20 }}
         animate={buttonControls}
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
       >
-        <AnimatePresence mode="wait">
-          {open ? (
+        <span className="relative grid place-items-center">
+          <motion.span
+            aria-hidden={!open}
+            animate={{ opacity: open ? 1 : 0, rotate: open ? 0 : -90, scale: open ? 1 : 0.6 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="absolute inset-0 grid place-items-center"
+          >
+            <X className="h-6 w-6" />
+          </motion.span>
+          <motion.span
+            aria-hidden={open}
+            animate={{ opacity: open ? 0 : 1, rotate: open ? 90 : 0, scale: open ? 0.6 : 1 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="absolute inset-0 grid place-items-center"
+          >
+            <SproutLeafIcon className="h-7 w-7" />
             <motion.span
-              key="x"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <X className="h-6 w-6" />
-            </motion.span>
-          ) : (
-            <motion.span
-              key="leaf"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="relative"
-            >
-              <SproutLeafIcon className="h-7 w-7" />
-              <motion.span
-                className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-clay-400 border border-cream"
-                animate={{ scale: [1, 1.3, 1] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              />
-            </motion.span>
-          )}
-        </AnimatePresence>
+              className="absolute top-1.5 right-2.5 h-2.5 w-2.5 rounded-full bg-clay-400 border border-cream"
+              animate={prefersReducedMotion ? undefined : { scale: [1, 1.3, 1] }}
+              transition={
+                prefersReducedMotion
+                  ? undefined
+                  : { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
+              }
+            />
+          </motion.span>
+        </span>
       </motion.button>
+
+      <AnimatePresence>
+        {showHint && !open && !hintDismissed && (
+          <motion.div
+            key="sprout-hint"
+            role="button"
+            tabIndex={0}
+            aria-label="Open Sprout chat"
+            onClick={() => {
+              setOpen(true);
+              dismissHint();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setOpen(true);
+                dismissHint();
+              }
+            }}
+            initial={prefersReducedMotion ? false : { opacity: 0, x: 20 }}
+            animate={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 1, x: 0 }}
+            exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: 20 }}
+            transition={{ duration: prefersReducedMotion ? 0.15 : 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed bottom-7 right-24 z-50 max-w-[260px] cursor-pointer select-none rounded-2xl rounded-br-sm border border-sage-200 bg-cream px-3.5 py-2.5 text-sm text-ink shadow-leaf"
+          >
+            <div className="flex items-start gap-2">
+              <div className="flex-1 min-w-0">
+                <div className="font-display text-sm leading-tight text-sage-800">
+                  Sprout
+                </div>
+                <p className="mt-0.5 text-[13px] leading-snug text-ink">
+                  Hi, I&apos;m Sprout. Got a sorting question?
+                </p>
+              </div>
+              <button
+                type="button"
+                aria-label="Dismiss Sprout hint"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  dismissHint();
+                }}
+                className="-mr-1 -mt-1 grid place-items-center h-6 w-6 rounded-full text-ink-muted hover:bg-sage-100/70 hover:text-ink transition"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {open && (

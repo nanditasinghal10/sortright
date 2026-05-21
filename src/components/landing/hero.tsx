@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { stagger, fadeUp, easeOrganic } from "@/components/motion-primitives";
@@ -53,8 +53,23 @@ const SEEDS = [
   { className: "hidden md:block absolute top-[12%] right-[36%] h-1 w-1 rounded-full bg-ink-muted/50",      delay: 1.4, dur: 7, shift: 3 }
 ];
 
-function DecorShapeEl({ d }: { d: DecorItem }) {
+function DecorShapeEl({ d, reduced }: { d: DecorItem; reduced?: boolean }) {
   if (d.shape === "seed") return null;
+  if (reduced) {
+    return (
+      <svg
+        viewBox="0 0 64 64"
+        aria-hidden="true"
+        className={d.className}
+        style={{
+          transform: `${d.flip ? "scaleX(-1) " : ""}rotate(${d.baseRotate}deg)`,
+          opacity: 1
+        }}
+      >
+        <path d={PATHS[d.shape]} fill="currentColor" />
+      </svg>
+    );
+  }
   return (
     <motion.svg
       viewBox="0 0 64 64"
@@ -78,7 +93,22 @@ function DecorShapeEl({ d }: { d: DecorItem }) {
   );
 }
 
-function Seed({ className, delay, dur, shift }: { className: string; delay: number; dur: number; shift: number }) {
+function Seed({
+  className,
+  delay,
+  dur,
+  shift,
+  reduced
+}: {
+  className: string;
+  delay: number;
+  dur: number;
+  shift: number;
+  reduced?: boolean;
+}) {
+  if (reduced) {
+    return <span aria-hidden="true" className={className} />;
+  }
   return (
     <motion.span
       aria-hidden="true"
@@ -94,13 +124,15 @@ function Seed({ className, delay, dur, shift }: { className: string; delay: numb
 }
 
 export function Hero() {
+  const prefersReducedMotion = useReducedMotion();
+  const reduced = prefersReducedMotion ?? false;
   return (
     <section className="relative overflow-hidden">
       {DECOR.map((d, i) => (
-        <DecorShapeEl key={i} d={d} />
+        <DecorShapeEl key={i} d={d} reduced={reduced} />
       ))}
       {SEEDS.map((s, i) => (
-        <Seed key={i} {...s} />
+        <Seed key={i} {...s} reduced={reduced} />
       ))}
 
       <div className="mx-auto max-w-5xl px-6 pt-20 pb-24 md:pt-28 md:pb-32 text-center relative">

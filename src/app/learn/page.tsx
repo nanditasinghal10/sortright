@@ -130,11 +130,11 @@ function LearnInner() {
 
       <section className="mx-auto max-w-6xl px-6 pb-24">
         <div className="mb-6 flex items-baseline justify-between">
-          <p className="text-sm text-ink-muted">
+          <span className="inline-flex items-center rounded-full border border-sage-200/70 bg-cream-50 px-3 py-1 text-xs font-medium text-sage-800 shadow-soft">
             {results.length === 0
               ? "No matches"
               : `${results.length} ${results.length === 1 ? "item" : "items"}`}
-          </p>
+          </span>
         </div>
 
         {results.length === 0 ? (
