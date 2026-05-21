@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Flame, Sparkles } from "lucide-react";
+import { ChevronDown, Flame, Menu, Sparkles, X } from "lucide-react";
 import { useSortStore } from "@/lib/store";
 import { useHydrated } from "@/lib/api";
 import { SortRightMark } from "@/components/brand/sortright-mark";
@@ -42,6 +42,7 @@ export function SiteHeader() {
   const streak = hydrated ? highestStreak : 0;
 
   const [learnOpen, setLearnOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const learnRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,7 +65,17 @@ export function SiteHeader() {
 
   useEffect(() => {
     setLearnOpen(false);
+    setMobileOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMobileOpen(false);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
 
   const learnActive = LEARN_NAV.some((i) => pathname?.startsWith(i.href));
 
@@ -218,32 +229,57 @@ export function SiteHeader() {
           >
             Start sorting
           </Link>
+          <button
+            type="button"
+            onClick={() => setMobileOpen((o) => !o)}
+            aria-expanded={mobileOpen}
+            aria-controls="sortright-mobile-menu"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            className="lg:hidden grid place-items-center h-10 w-10 rounded-full border border-sage-300/70 bg-cream-50/80 text-ink hover:bg-sage-100/70 transition-colors"
+          >
+            {mobileOpen ? (
+              <X className="h-5 w-5" aria-hidden />
+            ) : (
+              <Menu className="h-5 w-5" aria-hidden />
+            )}
+          </button>
         </div>
       </div>
 
-      {/* Mobile nav row */}
-      <div className="lg:hidden border-t border-sage-200/60 overflow-x-auto">
-        <div className="flex gap-1 px-4 py-2 min-w-max">
-          {MOBILE_NAV.map((item) => {
-            const active = isActive(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "px-3 py-1.5 text-xs rounded-full whitespace-nowrap transition-colors",
-                  active
-                    ? "bg-sage-200/80 text-sage-900"
-                    : "text-ink-soft hover:bg-sage-100/60"
-                )}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+      {/* Mobile menu panel */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            id="sortright-mobile-menu"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="lg:hidden border-t border-sage-200/60 bg-cream/95 backdrop-blur-md"
+          >
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 py-3 space-y-1">
+              {MOBILE_NAV.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "block px-3 py-2.5 rounded-xl text-sm transition-colors",
+                      active
+                        ? "bg-sage-100 text-sage-900"
+                        : "text-ink hover:bg-sage-100/70"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
