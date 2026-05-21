@@ -72,7 +72,7 @@ export function SiteHeader() {
 
   return (
     <header className="z-20 sticky top-0 backdrop-blur-md bg-cream/70 border-b border-sage-200/60">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center gap-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center gap-4">
         <Link
           href="/"
           className="flex items-center gap-2 group shrink-0"
@@ -91,7 +91,7 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-1" aria-label="Primary">
+        <nav className="hidden lg:flex flex-1 items-center justify-evenly" aria-label="Primary">
           {PRIMARY_NAV.map((item) => {
             const active = isActive(item.href);
             return (
@@ -180,7 +180,7 @@ export function SiteHeader() {
           </div>
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0 ml-auto lg:ml-0">
           <Link
             href="/impact"
             aria-label={`Your impact: ${score} points, best streak ${streak}`}
