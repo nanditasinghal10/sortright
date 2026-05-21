@@ -91,6 +91,15 @@ export function SproutAssistant() {
     }
   }, [open]);
 
+  // Auto-grow the textarea up to a comfortable max so multi-line drafts don't
+  // start an internal scrollbar — instead the input panel itself expands.
+  useEffect(() => {
+    const ta = inputRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    ta.style.height = Math.min(ta.scrollHeight, 160) + "px";
+  }, [input, open]);
+
   // First-visit hint: show a small bubble pointing at Sprout after ~3s.
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -347,7 +356,7 @@ export function SproutAssistant() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onKeyDown}
                 placeholder="Ask Sprout anything green..."
-                className="flex-1 resize-none max-h-32 rounded-2xl border border-sage-200 bg-white px-3 py-2 text-sm placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-sage-500/40"
+                className="flex-1 resize-none overflow-hidden rounded-2xl border border-sage-200 bg-white px-3 py-2 text-sm leading-relaxed placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-sage-500/40"
               />
               <button
                 type="submit"
