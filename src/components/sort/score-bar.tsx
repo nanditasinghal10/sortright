@@ -33,9 +33,14 @@ function AnimatedNumber({ value }: { value: number }) {
 export function ScoreBar({ score, streak, highStreak, remaining, total }: ScoreBarProps) {
   return (
     <div className="grid grid-cols-4 gap-2 sm:gap-3 rounded-organic bg-cream-50/80 border border-sage-200/70 p-3 shadow-soft">
-      <Stat label="Score" value={<AnimatedNumber value={score} />} />
+      <Stat
+        label="Score"
+        title="Total points earned across all rounds"
+        value={<AnimatedNumber value={score} />}
+      />
       <Stat
         label="Streak"
+        title="Correct sorts in a row this round"
         value={
           <span className="flex items-center gap-1">
             <Flame
@@ -46,9 +51,14 @@ export function ScoreBar({ score, streak, highStreak, remaining, total }: ScoreB
           </span>
         }
       />
-      <Stat label="Best" value={<AnimatedNumber value={highStreak} />} />
+      <Stat
+        label="Best"
+        title="Your highest streak ever"
+        value={<AnimatedNumber value={highStreak} />}
+      />
       <Stat
         label="Left"
+        title="Items remaining in this round"
         value={
           <span className="tabular-nums">
             {remaining}
@@ -60,9 +70,20 @@ export function ScoreBar({ score, streak, highStreak, remaining, total }: ScoreB
   );
 }
 
-function Stat({ label, value }: { label: string; value: React.ReactNode }) {
+function Stat({
+  label,
+  value,
+  title
+}: {
+  label: string;
+  value: React.ReactNode;
+  title?: string;
+}) {
   return (
-    <div className="flex flex-col items-center justify-center gap-0.5">
+    <div
+      className="flex flex-col items-center justify-center gap-0.5"
+      title={title}
+    >
       <span className="text-[0.65rem] uppercase tracking-wider text-ink-muted font-medium">
         {label}
       </span>

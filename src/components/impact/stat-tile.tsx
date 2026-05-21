@@ -27,6 +27,7 @@ export function StatTile({ label, value, hint, icon, accent = "sage" }: StatTile
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={driftSpring}
+      title={hint ? `${label}: ${hint}` : label}
       className="rounded-organic border border-sage-200/70 bg-cream-50/80 shadow-soft p-5 flex flex-col gap-3"
     >
       <div className="flex items-center justify-between">

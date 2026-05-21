@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Flame, Leaf, Sparkles } from "lucide-react";
+import { ChevronDown, Flame, Sparkles } from "lucide-react";
 import { useSortStore } from "@/lib/store";
 import { useHydrated } from "@/lib/api";
+import { SortRightMark } from "@/components/brand/sortright-mark";
 
 type NavItem = { href: string; label: string };
 
@@ -75,16 +76,17 @@ export function SiteHeader() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center gap-4">
         <Link
           href="/"
-          className="flex items-center gap-2 group shrink-0"
+          className="flex items-center gap-2.5 group shrink-0"
           aria-label="SortRight home"
+          title="SortRight — sort waste, live light"
         >
           <motion.span
-            initial={{ rotate: -8 }}
-            animate={{ rotate: [-8, 6, -8] }}
+            initial={{ rotate: -6 }}
+            animate={{ rotate: [-6, 4, -6] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="grid place-items-center h-9 w-9 rounded-full bg-sage-200 text-sage-800 shadow-soft"
+            className="grid place-items-center h-9 w-9 rounded-full bg-sage-200 shadow-soft"
           >
-            <Leaf className="h-5 w-5" />
+            <SortRightMark className="h-5 w-5" />
           </motion.span>
           <span className="font-display text-xl tracking-tight">
             Sort<span className="text-sage-700">Right</span>
@@ -184,14 +186,21 @@ export function SiteHeader() {
           <Link
             href="/impact"
             aria-label={`Your impact: ${score} points, best streak ${streak}`}
+            title={`${score} total points · best streak ${streak} day${streak === 1 ? "" : "s"}`}
             className="hidden sm:inline-flex items-center gap-2 rounded-full border border-sage-300/70 bg-sage-50/80 hover:bg-sage-100/80 px-3 h-10 text-sm transition"
           >
-            <span className="inline-flex items-center gap-1 text-sage-800">
+            <span
+              className="inline-flex items-center gap-1 text-sage-800"
+              title="Total points earned"
+            >
               <Sparkles className="h-3.5 w-3.5 text-clay-500" aria-hidden />
               <span className="font-medium tabular-nums">{score}</span>
             </span>
             <span className="h-3 w-px bg-sage-300/80" />
-            <span className="inline-flex items-center gap-1 text-sage-800">
+            <span
+              className="inline-flex items-center gap-1 text-sage-800"
+              title="Best streak ever"
+            >
               <Flame
                 className={cn(
                   "h-3.5 w-3.5",
@@ -204,6 +213,7 @@ export function SiteHeader() {
           </Link>
           <Link
             href="/sort"
+            title="Jump into the sort game"
             className="inline-flex items-center gap-2 rounded-full bg-sage-700 hover:bg-sage-800 text-cream px-4 h-10 text-sm font-medium whitespace-nowrap shadow-leaf transition"
           >
             Start sorting

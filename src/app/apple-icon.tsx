@@ -20,18 +20,28 @@ export default function AppleIcon() {
         }}
       >
         <svg
-          width="100"
-          height="100"
+          width="112"
+          height="112"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#3A4730"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ transform: "rotate(-8deg)" }}
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96a1 1 0 0 1 1.8.5c0 5.94-2.66 9.04-7 12.04-4.34 3-9.94 3.04-13 0-3.06-3.04-3-8.94 0-13 2.94-4 5.84-4 12-4" />
-          <path d="M2 21c0-3 1.85-5.36 5.08-6" />
+          <path
+            d="M5 20.2C3.9 13.5 10.7 4.7 19.5 3.5c.6 7.6-7 16.6-14.5 16.7Z"
+            fill="#3A4730"
+          />
+          <path
+            d="M6 18.5C9 14.5 13.5 9.5 18 6"
+            stroke="#CDDABA"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+          <path
+            d="M2.2 21.8 5 19"
+            stroke="#C77A4A"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+          />
         </svg>
       </div>
     ),

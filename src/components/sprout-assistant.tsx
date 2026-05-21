@@ -193,6 +193,7 @@ export function SproutAssistant() {
       <motion.button
         type="button"
         aria-label={open ? "Close Sprout assistant" : "Chat with Sprout"}
+        title={open ? "Close Sprout" : "Ask Sprout — sorting & sustainability help"}
         onClick={handleButtonClick}
         className="fixed bottom-5 right-5 z-50 grid place-items-center h-14 w-14 rounded-full bg-sage-700 text-cream shadow-leaf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
         initial={{ scale: 0 }}
@@ -308,6 +309,7 @@ export function SproutAssistant() {
                 type="button"
                 onClick={() => setMuted((m) => !m)}
                 aria-label={muted ? "Unmute reply sound" : "Mute reply sound"}
+                title={muted ? "Reply sound is off — click to unmute" : "Reply sound is on — click to mute"}
                 aria-pressed={muted}
                 className="grid place-items-center h-8 w-8 rounded-full text-ink-muted hover:bg-sage-100/70 hover:text-ink transition"
               >

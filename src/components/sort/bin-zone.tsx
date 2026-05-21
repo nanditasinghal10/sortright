@@ -19,6 +19,7 @@ export const BinZone = forwardRef<HTMLDivElement, BinZoneProps>(
       <motion.div
         ref={ref}
         data-bin={bin}
+        title={`${def.label} — ${def.blurb}`}
         animate={{
           scale: isHovered ? 1.12 : 1,
           y: isHovered ? -6 : 0

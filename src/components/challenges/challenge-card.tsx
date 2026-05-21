@@ -72,7 +72,11 @@ export function ChallengeCard({ challenge, done, onComplete, ctaLabel = "Mark as
             </div>
 
             <div className="flex items-center justify-between text-xs text-ink-muted">
-              <div className="flex items-center gap-1.5" aria-label={`Difficulty ${challenge.difficulty} of 3`}>
+              <div
+                className="flex items-center gap-1.5"
+                aria-label={`Difficulty ${challenge.difficulty} of 3`}
+                title={`Difficulty: ${challenge.difficulty} of 3`}
+              >
                 {dots.map((on, i) => (
                   <span
                     key={i}

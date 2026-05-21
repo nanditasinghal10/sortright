@@ -64,6 +64,7 @@ export function BadgeGrid({ earned }: BadgeGridProps) {
             viewport={{ once: true }}
             transition={{ ...driftSpring, delay: i * 0.03 }}
             aria-label={`${b.label}${unlocked ? " (earned)" : " (locked)"}`}
+            title={`${b.label}${unlocked ? " — earned" : " (locked)"}: ${b.blurb}`}
             className={cn(
               "rounded-organic border p-4 flex flex-col items-center text-center gap-2 shadow-soft",
               unlocked
