@@ -17,7 +17,7 @@ type Step = {
 const STEPS: Step[] = [
   {
     title: "Welcome to SortRight 🌱",
-    body: "Quick tour, three things SortRight can do for you.",
+    body: "Quick tour, four things SortRight can do for you.",
     secondaryLabel: "Next"
   },
   {
@@ -32,6 +32,11 @@ const STEPS: Step[] = [
     body: "When in doubt, locate a real place near you for batteries, e-waste, textiles.",
     primaryLabel: "Open the map",
     primaryHref: "/locate",
+    secondaryLabel: "Next"
+  },
+  {
+    title: "Stuck? Ask Sprout.",
+    body: "The little sprout in the bottom-right is a chatbot. Tap it any time for sorting questions or sustainability swaps — it answers in plain language.",
     secondaryLabel: "Done"
   }
 ];

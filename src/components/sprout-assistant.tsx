@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useAnimationControls, useReducedMotion } from "framer-motion";
 import { Send, X, Sparkles, Volume2, VolumeX } from "lucide-react";
 
 interface ChatMessage {
@@ -41,6 +41,8 @@ export function SproutAssistant() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const buttonControls = useAnimationControls();
+  const interactedRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
   function playReplySound() {
@@ -86,10 +88,77 @@ export function SproutAssistant() {
 
   useEffect(() => {
     if (open) {
+      interactedRef.current = true;
       const t = setTimeout(() => inputRef.current?.focus(), 250);
       return () => clearTimeout(t);
     }
   }, [open]);
+
+  // Idle attention loop: gentle breathing, with periodic wiggles to draw the
+  // eye when the chat hasn't been opened yet (and less often after).
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      buttonControls.stop();
+      buttonControls.set({ scale: 1, rotate: 0 });
+      return;
+    }
+    if (open) {
+      buttonControls.stop();
+      buttonControls.set({ scale: 1, rotate: 0 });
+      return;
+    }
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const breathe = async () => {
+      if (cancelled) return;
+      await buttonControls.start({
+        scale: [1, 1.08, 1],
+        rotate: 0,
+        transition: { duration: 3.2, repeat: Infinity, ease: "easeInOut" }
+      });
+    };
+
+    const wiggle = async () => {
+      if (cancelled) return;
+      buttonControls.stop();
+      await buttonControls.start({
+        scale: [1, 1.18, 0.96, 1.12, 1],
+        rotate: [0, -12, 10, -6, 0],
+        transition: { duration: 1.1, ease: "easeInOut" }
+      });
+      if (cancelled) return;
+      breathe();
+      schedule();
+    };
+
+    const schedule = () => {
+      const delay = interactedRef.current ? 18000 : 7000;
+      timer = setTimeout(() => {
+        if (cancelled || open) return;
+        wiggle();
+      }, delay);
+    };
+
+    // Entrance pop, then breathing, then schedule wiggles.
+    (async () => {
+      await buttonControls.start({
+        scale: 1,
+        rotate: 0,
+        transition: { type: "spring", stiffness: 220, damping: 18 }
+      });
+      if (cancelled) return;
+      breathe();
+      schedule();
+    })();
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+      buttonControls.stop();
+    };
+  }, [open, prefersReducedMotion, buttonControls]);
 
   // Auto-grow the textarea up to a comfortable max so multi-line drafts don't
   // start an internal scrollbar — instead the input panel itself expands.
@@ -196,16 +265,7 @@ export function SproutAssistant() {
         onClick={handleButtonClick}
         className="fixed bottom-5 right-5 z-50 grid place-items-center h-14 w-14 rounded-full bg-sage-700 text-cream shadow-leaf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
         initial={{ scale: 0 }}
-        animate={
-          prefersReducedMotion || open
-            ? { scale: 1 }
-            : { scale: [1, 1.08, 1] }
-        }
-        transition={
-          prefersReducedMotion || open
-            ? { type: "spring", stiffness: 220, damping: 18 }
-            : { duration: 3.2, repeat: Infinity, ease: "easeInOut" }
-        }
+        animate={buttonControls}
         whileHover={{ scale: 1.12 }}
         whileTap={{ scale: 0.94 }}
       >
