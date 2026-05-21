@@ -2,21 +2,34 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Leaf, Flame, Sparkles } from "lucide-react";
+import { ChevronDown, Flame, Leaf, Sparkles } from "lucide-react";
 import { useSortStore } from "@/lib/store";
 import { useHydrated } from "@/lib/api";
 
-const NAV = [
-  { href: "/sort", label: "Sort game" },
-  { href: "/identify", label: "Snap and sort" },
+type NavItem = { href: string; label: string };
+
+const PRIMARY_NAV: NavItem[] = [
+  { href: "/sort", label: "Sort" },
+  { href: "/identify", label: "Snap" },
+  { href: "/locate", label: "Locate" },
+  { href: "/challenges", label: "Challenges" }
+];
+
+const LEARN_NAV: { href: string; label: string; desc: string }[] = [
+  { href: "/learn", label: "Learn the basics", desc: "What goes where, why it matters" },
+  { href: "/quiz", label: "Take the quiz", desc: "Test what you know" },
+  { href: "/sustainable-living", label: "Live sustainably", desc: "Small daily habits" }
+];
+
+const MOBILE_NAV: NavItem[] = [
+  ...PRIMARY_NAV,
   { href: "/learn", label: "Learn" },
   { href: "/quiz", label: "Quiz" },
-  { href: "/locate", label: "Find drop-off" },
-  { href: "/challenges", label: "Challenges" },
-  { href: "/impact", label: "Impact" },
-  { href: "/sustainable-living", label: "Live sustainably" }
+  { href: "/sustainable-living", label: "Live sustainably" },
+  { href: "/impact", label: "Impact" }
 ];
 
 export function SiteHeader() {
@@ -26,12 +39,43 @@ export function SiteHeader() {
   const highestStreak = useSortStore((s) => s.highestStreak);
   const score = hydrated ? totalScore : 0;
   const streak = hydrated ? highestStreak : 0;
+
+  const [learnOpen, setLearnOpen] = useState(false);
+  const learnRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!learnOpen) return;
+    function onDoc(e: MouseEvent) {
+      if (learnRef.current && !learnRef.current.contains(e.target as Node)) {
+        setLearnOpen(false);
+      }
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setLearnOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [learnOpen]);
+
+  useEffect(() => {
+    setLearnOpen(false);
+  }, [pathname]);
+
+  const learnActive = LEARN_NAV.some((i) => pathname?.startsWith(i.href));
+
+  const isActive = (href: string) =>
+    pathname === href || (href !== "/" && pathname?.startsWith(href));
+
   return (
     <header className="z-20 sticky top-0 backdrop-blur-md bg-cream/70 border-b border-sage-200/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center gap-6">
         <Link
           href="/"
-          className="flex items-center gap-2 group"
+          className="flex items-center gap-2 group shrink-0"
           aria-label="SortRight home"
         >
           <motion.span
@@ -46,15 +90,17 @@ export function SiteHeader() {
             Sort<span className="text-sage-700">Right</span>
           </span>
         </Link>
-        <nav className="hidden lg:flex items-center gap-1 ml-4">
-          {NAV.map((item) => {
-            const active = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
+
+        <nav className="hidden lg:flex items-center gap-1" aria-label="Primary">
+          {PRIMARY_NAV.map((item) => {
+            const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative px-3 py-2 text-sm rounded-full whitespace-nowrap transition-colors",
+                  "relative px-3.5 py-2 text-sm rounded-full whitespace-nowrap transition-colors",
                   active ? "text-sage-900" : "text-ink-soft hover:text-ink"
                 )}
               >
@@ -69,7 +115,71 @@ export function SiteHeader() {
               </Link>
             );
           })}
+
+          <div className="relative" ref={learnRef}>
+            <button
+              type="button"
+              onClick={() => setLearnOpen((o) => !o)}
+              aria-expanded={learnOpen}
+              aria-haspopup="menu"
+              className={cn(
+                "relative inline-flex items-center gap-1 px-3.5 py-2 text-sm rounded-full whitespace-nowrap transition-colors",
+                learnActive ? "text-sage-900" : "text-ink-soft hover:text-ink"
+              )}
+            >
+              {learnActive && (
+                <motion.span
+                  layoutId="nav-pill"
+                  className="absolute inset-0 rounded-full bg-sage-200/70"
+                  transition={{ type: "spring", stiffness: 320, damping: 30 }}
+                />
+              )}
+              <span className="relative">Learn</span>
+              <ChevronDown
+                className={cn(
+                  "relative h-3.5 w-3.5 transition-transform",
+                  learnOpen ? "rotate-180" : ""
+                )}
+                aria-hidden
+              />
+            </button>
+            <AnimatePresence>
+              {learnOpen && (
+                <motion.div
+                  role="menu"
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.15, ease: "easeOut" }}
+                  className="absolute top-full left-0 mt-2 w-72 rounded-organic border border-sage-200 bg-cream shadow-leaf p-2 z-30"
+                >
+                  {LEARN_NAV.map((item) => {
+                    const active = isActive(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        role="menuitem"
+                        className={cn(
+                          "flex flex-col gap-0.5 px-3 py-2.5 rounded-xl transition-colors",
+                          active
+                            ? "bg-sage-100 text-sage-900"
+                            : "text-ink hover:bg-sage-100/70"
+                        )}
+                      >
+                        <span className="text-sm font-medium">{item.label}</span>
+                        <span className="text-[11.5px] text-ink-muted leading-snug">
+                          {item.desc}
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </nav>
+
         <div className="ml-auto flex items-center gap-2">
           <Link
             href="/impact"
@@ -77,15 +187,19 @@ export function SiteHeader() {
             className="hidden sm:inline-flex items-center gap-2 rounded-full border border-sage-300/70 bg-sage-50/80 hover:bg-sage-100/80 px-3 h-10 text-sm transition"
           >
             <span className="inline-flex items-center gap-1 text-sage-800">
-              <Sparkles className="h-3.5 w-3.5 text-clay-500" />
+              <Sparkles className="h-3.5 w-3.5 text-clay-500" aria-hidden />
               <span className="font-medium tabular-nums">{score}</span>
-              <span className="text-ink-muted text-xs">pts</span>
             </span>
             <span className="h-3 w-px bg-sage-300/80" />
             <span className="inline-flex items-center gap-1 text-sage-800">
-              <Flame className={cn("h-3.5 w-3.5", streak > 0 ? "text-clay-500" : "text-ink-muted")} />
+              <Flame
+                className={cn(
+                  "h-3.5 w-3.5",
+                  streak > 0 ? "text-clay-500" : "text-ink-muted"
+                )}
+                aria-hidden
+              />
               <span className="font-medium tabular-nums">{streak}</span>
-              <span className="text-ink-muted text-xs">best</span>
             </span>
           </Link>
           <Link
@@ -96,18 +210,22 @@ export function SiteHeader() {
           </Link>
         </div>
       </div>
+
       {/* Mobile nav row */}
       <div className="lg:hidden border-t border-sage-200/60 overflow-x-auto">
         <div className="flex gap-1 px-4 py-2 min-w-max">
-          {NAV.map((item) => {
-            const active = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
+          {MOBILE_NAV.map((item) => {
+            const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
                   "px-3 py-1.5 text-xs rounded-full whitespace-nowrap transition-colors",
-                  active ? "bg-sage-200/80 text-sage-900" : "text-ink-soft hover:bg-sage-100/60"
+                  active
+                    ? "bg-sage-200/80 text-sage-900"
+                    : "text-ink-soft hover:bg-sage-100/60"
                 )}
               >
                 {item.label}

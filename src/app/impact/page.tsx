@@ -100,6 +100,7 @@ export default function ImpactPage() {
               items={totals.items}
               streak={state.currentStreak}
               diverted={totals.diverted}
+              badges={state.badges.map((b) => b.id)}
             />
           </div>
         ) : null}
