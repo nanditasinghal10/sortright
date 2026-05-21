@@ -42,9 +42,9 @@ export function ItemChip({ item, isOverBin, onDragStart, onDrag, onDragEnd }: It
       animate={
         dragging
           ? isOverBin
-            ? { scale: 0.55, rotate: 0, cursor: "grabbing" }
-            : { scale: 1.12, rotate: -3, cursor: "grabbing" }
-          : { scale: 1, rotate: 0 }
+            ? { opacity: 1, y: 0, scale: 0.55, rotate: 0, cursor: "grabbing" }
+            : { opacity: 1, y: 0, scale: 1.12, rotate: -3, cursor: "grabbing" }
+          : { opacity: 1, y: 0, scale: 1, rotate: 0 }
       }
       transition={driftSpring}
       initial={{ opacity: 0, y: 12, scale: 0.92 }}
