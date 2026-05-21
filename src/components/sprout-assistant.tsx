@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Send, X, Sparkles } from "lucide-react";
+import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
+import { Send, X, Sparkles, Volume2, VolumeX } from "lucide-react";
 
 interface ChatMessage {
   id: string;
@@ -33,8 +33,96 @@ export function SproutAssistant() {
   const [messages, setMessages] = useState<ChatMessage[]>([GREETING]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [muted, setMuted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const buttonControls = useAnimationControls();
+  const interactedRef = useRef(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  function playReplySound() {
+    if (muted || typeof window === "undefined") return;
+    try {
+      if (!audioCtxRef.current) {
+        const Ctx =
+          window.AudioContext ||
+          (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        if (!Ctx) return;
+        audioCtxRef.current = new Ctx();
+      }
+      const ctx = audioCtxRef.current;
+      if (ctx.state === "suspended") ctx.resume();
+
+      const t0 = ctx.currentTime;
+      const playNote = (freq: number, start: number, duration: number, peak: number) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, t0 + start);
+        gain.gain.linearRampToValueAtTime(peak, t0 + start + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + start + duration);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t0 + start);
+        osc.stop(t0 + start + duration + 0.05);
+      };
+
+      // Soft two-note rising chime: E5 -> A5 (a friendly fourth).
+      playNote(659.25, 0, 0.28, 0.07);
+      playNote(880.0, 0.1, 0.45, 0.07);
+    } catch {
+      // ignore audio errors
+    }
+  }
+
+  useEffect(() => {
+    if (open) interactedRef.current = true;
+  }, [open]);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+
+    (async () => {
+      try {
+        await buttonControls.start({
+          scale: 1,
+          rotate: 0,
+          transition: { delay: 0.6, type: "spring", stiffness: 220, damping: 18 }
+        });
+      } catch {
+        // interrupted
+      }
+    })();
+
+    const wiggle = async () => {
+      if (cancelled || open) return;
+      try {
+        await buttonControls.start({
+          scale: [1, 1.18, 0.94, 1.12, 0.98, 1.06, 1],
+          rotate: [0, -14, 12, -8, 6, -3, 0],
+          transition: { duration: 1.4, ease: [0.22, 1, 0.36, 1], times: [0, 0.2, 0.4, 0.55, 0.7, 0.85, 1] }
+        });
+      } catch {
+        // animation interrupted, ignore
+      }
+    };
+
+    const schedule = () => {
+      const delay = interactedRef.current ? 30000 : 11000 + Math.random() * 6000;
+      timeout = setTimeout(async () => {
+        await wiggle();
+        if (!cancelled) schedule();
+      }, delay);
+    };
+
+    schedule();
+
+    return () => {
+      cancelled = true;
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [open, buttonControls]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -68,6 +156,7 @@ export function SproutAssistant() {
       const data = (await res.json()) as { reply?: string };
       const reply = data.reply || "I'm a bit tangled. Try again?";
       setMessages((m) => [...m, { id: uid(), role: "assistant", content: reply }]);
+      playReplySound();
     } catch {
       setMessages((m) => [
         ...m,
@@ -77,6 +166,7 @@ export function SproutAssistant() {
           content: "I couldn't reach the network. Try again in a moment?"
         }
       ]);
+      playReplySound();
     } finally {
       setSending(false);
     }
@@ -97,8 +187,7 @@ export function SproutAssistant() {
         onClick={() => setOpen((o) => !o)}
         className="fixed bottom-5 right-5 z-50 grid place-items-center h-14 w-14 rounded-full bg-sage-700 text-cream shadow-leaf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
         initial={{ scale: 0, rotate: -20 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ delay: 0.6, type: "spring", stiffness: 220, damping: 18 }}
+        animate={buttonControls}
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
       >
@@ -158,6 +247,15 @@ export function SproutAssistant() {
                   Your friendly sorting + sustainability guide
                 </p>
               </div>
+              <button
+                type="button"
+                onClick={() => setMuted((m) => !m)}
+                aria-label={muted ? "Unmute reply sound" : "Mute reply sound"}
+                aria-pressed={muted}
+                className="grid place-items-center h-8 w-8 rounded-full text-ink-muted hover:bg-sage-100/70 hover:text-ink transition"
+              >
+                {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+              </button>
             </header>
 
             <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3">

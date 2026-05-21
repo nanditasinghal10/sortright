@@ -31,6 +31,10 @@ const QUOTES: { text: string; attribution: string }[] = [
   {
     text: "Small acts, when multiplied by millions of people, can transform the world.",
     attribution: "Howard Zinn"
+  },
+  {
+    text: "The world has enough for everyone’s needs, but not everyone’s greed.",
+    attribution: "Mahatma Gandhi"
   }
 ];
 
