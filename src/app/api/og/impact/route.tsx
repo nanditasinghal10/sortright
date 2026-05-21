@@ -126,23 +126,18 @@ export async function GET(request: Request) {
                 borderRadius: "999px"
               }}
             >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M5 20.2C3.9 13.5 10.7 4.7 19.5 3.5c.6 7.6-7 16.6-14.5 16.7Z"
-                  fill={sage800}
-                />
-                <path
-                  d="M6 18.5C9 14.5 13.5 9.5 18 6"
-                  stroke={sage200}
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M2.2 21.8 5 19"
-                  stroke={clay500}
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={sage800}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                <path d="M2 21c0-3 1.85-5.36 5.08-6" />
               </svg>
             </div>
             <div

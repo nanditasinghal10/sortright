@@ -84,7 +84,7 @@ export function SiteHeader() {
             initial={{ rotate: -6 }}
             animate={{ rotate: [-6, 4, -6] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="grid place-items-center h-9 w-9 rounded-full bg-sage-200 shadow-soft"
+            className="grid place-items-center h-9 w-9 rounded-full bg-sage-200 text-sage-800 shadow-soft"
           >
             <SortRightMark className="h-5 w-5" />
           </motion.span>

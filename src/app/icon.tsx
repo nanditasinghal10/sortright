@@ -25,23 +25,13 @@ export default function Icon() {
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          stroke="#3A4730"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <path
-            d="M5 20.2C3.9 13.5 10.7 4.7 19.5 3.5c.6 7.6-7 16.6-14.5 16.7Z"
-            fill="#3A4730"
-          />
-          <path
-            d="M6 18.5C9 14.5 13.5 9.5 18 6"
-            stroke="#CDDABA"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-          <path
-            d="M2.2 21.8 5 19"
-            stroke="#C77A4A"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-          />
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+          <path d="M2 21c0-3 1.85-5.36 5.08-6" />
         </svg>
       </div>
     ),
