@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Leaf } from "lucide-react";
+import { Leaf, Flame, Sparkles } from "lucide-react";
+import { useSortStore } from "@/lib/store";
+import { useHydrated } from "@/lib/api";
 
 const NAV = [
   { href: "/sort", label: "Sort game" },
@@ -18,6 +20,11 @@ const NAV = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const hydrated = useHydrated();
+  const totalScore = useSortStore((s) => s.totalScore);
+  const currentStreak = useSortStore((s) => s.currentStreak);
+  const score = hydrated ? totalScore : 0;
+  const streak = hydrated ? currentStreak : 0;
   return (
     <header className="z-20 sticky top-0 backdrop-blur-md bg-cream/70 border-b border-sage-200/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center gap-6">
@@ -63,6 +70,23 @@ export function SiteHeader() {
           })}
         </nav>
         <div className="ml-auto flex items-center gap-2">
+          <Link
+            href="/impact"
+            aria-label={`Your impact: ${score} points, ${streak} day streak`}
+            className="hidden sm:inline-flex items-center gap-2 rounded-full border border-sage-300/70 bg-sage-50/80 hover:bg-sage-100/80 px-3 h-10 text-sm transition"
+          >
+            <span className="inline-flex items-center gap-1 text-sage-800">
+              <Sparkles className="h-3.5 w-3.5 text-clay-500" />
+              <span className="font-medium tabular-nums">{score}</span>
+              <span className="text-ink-muted text-xs">pts</span>
+            </span>
+            <span className="h-3 w-px bg-sage-300/80" />
+            <span className="inline-flex items-center gap-1 text-sage-800">
+              <Flame className={cn("h-3.5 w-3.5", streak > 0 ? "text-clay-500" : "text-ink-muted")} />
+              <span className="font-medium tabular-nums">{streak}</span>
+              <span className="text-ink-muted text-xs">{streak === 1 ? "day" : "days"}</span>
+            </span>
+          </Link>
           <Link
             href="/sort"
             className="inline-flex items-center gap-2 rounded-full bg-sage-700 hover:bg-sage-800 text-cream px-4 h-10 text-sm font-medium shadow-leaf transition"
