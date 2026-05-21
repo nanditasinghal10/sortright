@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     parts: [{ text: m.content.slice(0, 2000) }]
   }));
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 15000);
