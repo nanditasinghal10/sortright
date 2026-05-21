@@ -192,10 +192,10 @@ export function SproutAssistant() {
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
       >
-        <span className="relative grid place-items-center">
+        <span className="relative grid place-items-center h-7 w-7">
           <motion.span
             aria-hidden={!open}
-            animate={{ opacity: open ? 1 : 0, rotate: open ? 0 : -90, scale: open ? 1 : 0.6 }}
+            animate={{ opacity: open ? 1 : 0, scale: open ? 1 : 0.7 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
             className="absolute inset-0 grid place-items-center"
           >
@@ -203,21 +203,24 @@ export function SproutAssistant() {
           </motion.span>
           <motion.span
             aria-hidden={open}
-            animate={{ opacity: open ? 0 : 1, rotate: open ? 90 : 0, scale: open ? 0.6 : 1 }}
+            animate={{ opacity: open ? 0 : 1, scale: open ? 0.7 : 1 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
             className="absolute inset-0 grid place-items-center"
           >
             <SproutLeafIcon className="h-7 w-7" />
-            <motion.span
-              className="absolute top-1.5 right-2.5 h-2.5 w-2.5 rounded-full bg-clay-400 border border-cream"
-              animate={prefersReducedMotion ? undefined : { scale: [1, 1.3, 1] }}
-              transition={
-                prefersReducedMotion
-                  ? undefined
-                  : { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
-              }
-            />
           </motion.span>
+          <motion.span
+            aria-hidden="true"
+            className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-clay-400 border border-cream"
+            animate={
+              prefersReducedMotion || open ? { opacity: open ? 0 : 1, scale: 1 } : { opacity: 1, scale: [1, 1.3, 1] }
+            }
+            transition={
+              prefersReducedMotion || open
+                ? { duration: 0.18 }
+                : { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
+            }
+          />
         </span>
       </motion.button>
 
