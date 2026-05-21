@@ -228,10 +228,11 @@ export function SproutAssistant() {
             key="panel"
             role="dialog"
             aria-label="Sprout chat"
-            initial={{ opacity: 0, y: 16, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.96 }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, scale: 0.2, y: 60, x: 60 }}
+            animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+            exit={{ opacity: 0, scale: 0.2, y: 60, x: 60 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformOrigin: "bottom right" }}
             className="fixed bottom-24 right-5 z-50 w-[min(92vw,380px)] h-[min(70vh,560px)] flex flex-col rounded-3xl border border-sage-200/80 bg-cream shadow-leaf overflow-hidden"
           >
             <header className="flex items-center gap-3 px-4 py-3 border-b border-sage-200/70 bg-sage-50/70">
@@ -255,14 +256,6 @@ export function SproutAssistant() {
                 className="grid place-items-center h-8 w-8 rounded-full text-ink-muted hover:bg-sage-100/70 hover:text-ink transition"
               >
                 {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-              </button>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label="Close chat"
-                className="grid place-items-center h-8 w-8 rounded-full text-ink-muted hover:bg-sage-100/70 hover:text-ink transition"
-              >
-                <X className="h-4 w-4" />
               </button>
             </header>
 
