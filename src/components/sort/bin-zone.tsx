@@ -20,8 +20,8 @@ export const BinZone = forwardRef<HTMLDivElement, BinZoneProps>(
         ref={ref}
         data-bin={bin}
         animate={{
-          scale: isHovered ? 1.06 : 1,
-          y: isHovered ? -4 : 0
+          scale: isHovered ? 1.12 : 1,
+          y: isHovered ? -6 : 0
         }}
         transition={{ type: "spring", stiffness: 320, damping: 22 }}
         className={cn(

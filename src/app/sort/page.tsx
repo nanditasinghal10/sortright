@@ -220,12 +220,13 @@ export default function SortGamePage() {
 
         {!done && (
           <>
-            <div className="relative flex h-56 sm:h-64 items-center justify-center rounded-organic border border-dashed border-sage-300/70 bg-cream-50/40">
+            <div className="relative z-20 flex h-56 sm:h-64 items-center justify-center rounded-organic border border-dashed border-sage-300/70 bg-cream-50/40">
               <AnimatePresence mode="popLayout">
                 {item && (
                   <ItemChip
                     key={`${item.id}-${idx}`}
                     item={item}
+                    isOverBin={hoverBin !== null}
                     onDragStart={handleDragStart}
                     onDrag={handleDrag}
                     onDragEnd={handleDragEnd}
@@ -234,7 +235,7 @@ export default function SortGamePage() {
               </AnimatePresence>
             </div>
 
-            <div className="grid grid-cols-4 gap-2 sm:gap-3">
+            <div className="relative z-10 grid grid-cols-4 gap-2 sm:gap-3">
               {BIN_LIST.map((b) => (
                 <BinZone
                   key={b.id}

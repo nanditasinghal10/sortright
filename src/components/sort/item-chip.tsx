@@ -1,22 +1,32 @@
 "use client";
 
+import { useState } from "react";
 import { motion, type PanInfo } from "framer-motion";
 import { driftSpring } from "@/components/motion-primitives";
 import type { WasteItem } from "@/lib/items";
 
 interface ItemChipProps {
   item: WasteItem;
+  isOverBin: boolean;
   onDragStart: () => void;
   onDrag: (point: { x: number; y: number }) => void;
   onDragEnd: (point: { x: number; y: number }) => void;
 }
 
-export function ItemChip({ item, onDragStart, onDrag, onDragEnd }: ItemChipProps) {
+export function ItemChip({ item, isOverBin, onDragStart, onDrag, onDragEnd }: ItemChipProps) {
+  const [dragging, setDragging] = useState(false);
+
   const handleDrag = (_: unknown, info: PanInfo) => {
     onDrag({ x: info.point.x, y: info.point.y });
   };
 
+  const handleDragStart = () => {
+    setDragging(true);
+    onDragStart();
+  };
+
   const handleDragEnd = (_: unknown, info: PanInfo) => {
+    setDragging(false);
     onDragEnd({ x: info.point.x, y: info.point.y });
   };
 
@@ -26,17 +36,20 @@ export function ItemChip({ item, onDragStart, onDrag, onDragEnd }: ItemChipProps
       dragSnapToOrigin
       dragElastic={0.2}
       dragMomentum={false}
-      onDragStart={onDragStart}
+      onDragStart={handleDragStart}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
-      whileDrag={{ scale: 1.12, rotate: -3, cursor: "grabbing" }}
-      whileTap={{ scale: 1.05 }}
-      whileHover={{ y: -3 }}
+      animate={
+        dragging
+          ? isOverBin
+            ? { scale: 0.55, rotate: 0, cursor: "grabbing" }
+            : { scale: 1.12, rotate: -3, cursor: "grabbing" }
+          : { scale: 1, rotate: 0 }
+      }
       transition={driftSpring}
       initial={{ opacity: 0, y: 12, scale: 0.92 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.18 } }}
-      className="cursor-grab active:cursor-grabbing"
+      className="relative z-50 cursor-grab active:cursor-grabbing"
       style={{ touchAction: "none" }}
     >
       <ChipBody item={item} />
