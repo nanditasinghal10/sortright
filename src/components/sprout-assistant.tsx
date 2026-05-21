@@ -256,6 +256,14 @@ export function SproutAssistant() {
               >
                 {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
               </button>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close chat"
+                className="grid place-items-center h-8 w-8 rounded-full text-ink-muted hover:bg-sage-100/70 hover:text-ink transition"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </header>
 
             <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
