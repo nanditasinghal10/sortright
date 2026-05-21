@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useAnimationControls, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Send, X, Sparkles, Volume2, VolumeX } from "lucide-react";
 
 interface ChatMessage {
@@ -40,8 +40,6 @@ export function SproutAssistant() {
   const [hintDismissed, setHintDismissed] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const buttonControls = useAnimationControls();
-  const interactedRef = useRef(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
@@ -79,73 +77,6 @@ export function SproutAssistant() {
       // ignore audio errors
     }
   }
-
-  useEffect(() => {
-    if (open) interactedRef.current = true;
-  }, [open]);
-
-  useEffect(() => {
-    let cancelled = false;
-    let timeout: ReturnType<typeof setTimeout> | undefined;
-
-    if (open) {
-      // Chat is open: snap the button to a clean resting state and keep it there.
-      buttonControls.stop();
-      buttonControls.set({ scale: 1, rotate: 0 });
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    // Chat is closed: do the entrance settle, then idle-wiggle on a timer.
-    (async () => {
-      try {
-        await buttonControls.start({
-          scale: 1,
-          rotate: 0,
-          transition: { type: "spring", stiffness: 220, damping: 18 }
-        });
-      } catch {
-        // interrupted
-      }
-    })();
-
-    // Honor reduced-motion preference: skip the idle-wiggle scheduling entirely.
-    if (prefersReducedMotion) {
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    const wiggle = async () => {
-      if (cancelled) return;
-      try {
-        await buttonControls.start({
-          scale: [1, 1.18, 0.94, 1.12, 0.98, 1.06, 1],
-          rotate: [0, -14, 12, -8, 6, -3, 0],
-          transition: { duration: 1.4, ease: [0.22, 1, 0.36, 1], times: [0, 0.2, 0.4, 0.55, 0.7, 0.85, 1] }
-        });
-      } catch {
-        // animation interrupted, ignore
-      }
-    };
-
-    const schedule = () => {
-      const delay = interactedRef.current ? 14000 + Math.random() * 6000 : 4000 + Math.random() * 4000;
-      timeout = setTimeout(async () => {
-        if (cancelled) return;
-        await wiggle();
-        if (!cancelled) schedule();
-      }, delay);
-    };
-
-    schedule();
-
-    return () => {
-      cancelled = true;
-      if (timeout) clearTimeout(timeout);
-    };
-  }, [open, buttonControls, prefersReducedMotion]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -256,7 +187,8 @@ export function SproutAssistant() {
         onClick={handleButtonClick}
         className="fixed bottom-5 right-5 z-50 grid place-items-center h-14 w-14 rounded-full bg-sage-700 text-cream shadow-leaf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
         initial={{ scale: 0, rotate: -20 }}
-        animate={buttonControls}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ type: "spring", stiffness: 220, damping: 18 }}
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
       >
