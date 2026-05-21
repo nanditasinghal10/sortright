@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Leaf } from "lucide-react";
+import { SortRightMark } from "@/components/brand/sortright-mark";
 
 export function SiteFooter() {
   return (
@@ -7,8 +7,8 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 grid gap-8 md:grid-cols-4">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="grid place-items-center h-9 w-9 rounded-full bg-sage-200 text-sage-800">
-              <Leaf className="h-5 w-5" />
+            <span className="grid place-items-center h-9 w-9 rounded-full bg-sage-200 text-sage-800 shadow-soft">
+              <SortRightMark className="h-5 w-5" />
             </span>
             <span className="font-display text-xl">SortRight</span>
           </div>
