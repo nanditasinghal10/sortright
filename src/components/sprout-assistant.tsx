@@ -83,12 +83,22 @@ export function SproutAssistant() {
     let cancelled = false;
     let timeout: ReturnType<typeof setTimeout> | undefined;
 
+    if (open) {
+      // Chat is open: snap the button to a clean resting state and keep it there.
+      buttonControls.stop();
+      buttonControls.set({ scale: 1, rotate: 0 });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    // Chat is closed: do the entrance settle, then idle-wiggle on a timer.
     (async () => {
       try {
         await buttonControls.start({
           scale: 1,
           rotate: 0,
-          transition: { delay: 0.6, type: "spring", stiffness: 220, damping: 18 }
+          transition: { type: "spring", stiffness: 220, damping: 18 }
         });
       } catch {
         // interrupted
@@ -96,7 +106,7 @@ export function SproutAssistant() {
     })();
 
     const wiggle = async () => {
-      if (cancelled || open) return;
+      if (cancelled) return;
       try {
         await buttonControls.start({
           scale: [1, 1.18, 0.94, 1.12, 0.98, 1.06, 1],
@@ -109,8 +119,9 @@ export function SproutAssistant() {
     };
 
     const schedule = () => {
-      const delay = interactedRef.current ? 30000 : 11000 + Math.random() * 6000;
+      const delay = interactedRef.current ? 14000 + Math.random() * 6000 : 4000 + Math.random() * 4000;
       timeout = setTimeout(async () => {
+        if (cancelled) return;
         await wiggle();
         if (!cancelled) schedule();
       }, delay);
