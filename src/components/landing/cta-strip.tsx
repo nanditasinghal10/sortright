@@ -1,35 +1,113 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Sprout } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { easeOrganic } from "@/components/motion-primitives";
 
+const QUOTES: { text: string; attribution: string }[] = [
+  {
+    text: "We don’t need a handful of people doing zero-waste perfectly. We need millions doing it imperfectly.",
+    attribution: "Anne-Marie Bonneau"
+  },
+  {
+    text: "There is no such thing as ‘away.’ When we throw anything away, it must go somewhere.",
+    attribution: "Annie Leonard"
+  },
+  {
+    text: "What you do makes a difference, and you have to decide what kind of difference you want to make.",
+    attribution: "Jane Goodall"
+  },
+  {
+    text: "The Earth is what we all have in common.",
+    attribution: "Wendell Berry"
+  },
+  {
+    text: "We do not inherit the Earth from our ancestors. We borrow it from our children.",
+    attribution: "Native American proverb"
+  },
+  {
+    text: "Small acts, when multiplied by millions of people, can transform the world.",
+    attribution: "Howard Zinn"
+  }
+];
+
+const ROTATE_MS = 7000;
+
 export function Quote() {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % QUOTES.length);
+    }, ROTATE_MS);
+    return () => clearInterval(id);
+  }, [paused]);
+
+  const current = QUOTES[index];
+
   return (
-    <section className="mx-auto max-w-4xl px-6 py-20 md:py-28">
-      <motion.blockquote
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.9, ease: easeOrganic }}
-        className="text-center"
-      >
+    <section
+      className="mx-auto max-w-4xl px-6 py-20 md:py-28"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
+      <div className="text-center">
         <span
           aria-hidden="true"
           className="font-display text-6xl text-sage-300 leading-none block"
         >
           &ldquo;
         </span>
-        <p className="font-display text-3xl md:text-4xl lg:text-5xl tracking-tight text-ink leading-tight italic">
-          We don&rsquo;t need a handful of people doing zero-waste perfectly. We
-          need millions doing it imperfectly.
-        </p>
-        <footer className="mt-8 text-sm uppercase tracking-[0.2em] text-ink-muted not-italic">
-          the quiet ethos of SortRight
-        </footer>
-      </motion.blockquote>
+
+        <div className="relative min-h-[12rem] md:min-h-[14rem] flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.blockquote
+              key={index}
+              initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -16, filter: "blur(4px)" }}
+              transition={{ duration: 0.9, ease: easeOrganic }}
+              className="absolute inset-0 flex flex-col items-center justify-center"
+            >
+              <p className="font-display text-3xl md:text-4xl lg:text-5xl tracking-tight text-ink leading-tight italic">
+                {current.text}
+              </p>
+              <footer className="mt-6 md:mt-8 text-sm uppercase tracking-[0.2em] text-ink-muted not-italic">
+                {current.attribution}
+              </footer>
+            </motion.blockquote>
+          </AnimatePresence>
+        </div>
+
+        <div
+          className="mt-6 flex items-center justify-center gap-2"
+          role="tablist"
+          aria-label="Choose quote"
+        >
+          {QUOTES.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              aria-label={`Quote ${i + 1} of ${QUOTES.length}`}
+              onClick={() => setIndex(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === index
+                  ? "w-8 bg-sage-700"
+                  : "w-1.5 bg-sage-300 hover:bg-sage-500"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
